@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block title %}
+{% load crispy_forms_tags static %}
+{{ block.super }} - Firm Registration
+
+{% endblock title %}
+{{ block.super }}
+- delete account
+{% block Content %}
+
+<div class="row g-5">
+    <div class="">
+        <p>You are logged in as <strong>{{ request.user }}</strong></p>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.errors }}
+            <p>
+                Check to confirm <strong>delete of {{ obj.display_name }} account </strong>:
+                {{ form|crispy }}
+            </p>
+
+            <button type="submit" class="btn btn-info">Submit</button>
+        </form>
+        
+    </div>
+    
+</div>
+
+{% endblock Content %}

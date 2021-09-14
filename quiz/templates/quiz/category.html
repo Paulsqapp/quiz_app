@@ -1,0 +1,66 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags static %}
+{% block title %}
+{{ block.super }} - Create Category
+
+{% endblock title %}
+
+{% block Content %}
+<div  >
+  <div class="row g-5">
+    
+    <div class="">
+      <div>
+      <h3>List of all quizes in {{cat_name}} categories</h3>
+      <hr>
+      </div>
+    {% for category in cat_list %}
+    <div>
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <h3 class="mb-0">{{ category.name }}</h3>
+          <div class="mb-1 text-muted">Published on {{ category.created }} by  <a href="{% url 'qna:creator_page' category.creator %}">{{category.creator}}</a></div>
+          <p class="mb-auto">{{ category.short_desc }}</p>
+          <a href="{% url 'qna:qtn_list' category.slug %}"class="">Continue reading</a>
+        </div>
+    
+      </div>
+    </div>
+        
+    {% empty %}
+        <h5>No Quiz in that category</h5>
+    {% endfor %}
+  context
+  {% for x in cat_items %}
+  {{x}}
+  {% empty %}
+  kuma
+  {% endfor %}
+
+    {% if results %}
+
+    <div class="pagination">
+      <span class="step-links">
+        <!-- results == page_object -->
+        {% if results.has_previous %}
+
+        <a href="?q={{ q }}&page= 1"> first </a>
+        <a href="?q={{ q }}&page= {{ results.previous_page_number }}">previous</a>
+
+        {% endif %}
+        <span class="current">
+          Page {{ results.number }} of {{ results.paginator.num_pages }}
+        </span>
+        {% if results.has_next %}
+        <a href="?q={{ q }}&page= {{ results.next_page_number }}">Next</a>
+        <a href="?q={{ q }}&page= {{ results.paginator.num_pages  }}">Last</a>
+        {% endif %}
+      </span>
+    </div>
+    {% endif %}
+    </div>
+    
+  </div>
+</div>
+  {% endblock Content %}
+

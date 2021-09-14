@@ -1,0 +1,354 @@
+{% extends "index.html" %}
+{% block title %}
+{{ block.super }} - {{ quiz_info.name }}
+
+{% endblock title %}
+{% block css %}
+{{ block.super }}
+<style>
+  .choices {
+    border: 1px solid rgb(60, 177, 232);
+    padding: 0.5rem 1rem;
+  }
+
+  .correct {
+    border: 1px solid rgb(72, 255, 0);
+  }
+
+  .wrong {
+    border: 1px solid red;
+  }
+
+  .explanation_notes {
+    border: 1px solid rgb(148, 114, 114);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 1rem;
+  }
+
+  .hint_val {
+    border: 1px solid rgb(148, 114, 114);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 1rem;
+  }
+
+  #description {
+    border: 1px solid rgb(148, 114, 114);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 1rem;
+  }
+</style>
+{% endblock css %}
+{% block Content %}
+
+<div class="row g-5">
+  <div class="">
+
+<div class="description">
+  <article class="blog-post">
+    <h2 class="blog-post-title">{{quiz_info.name}}</h2>
+    <p class="blog-post-meta">{{quiz_info.created}} by <a href="#">{{ quiz_info..creator }}</a> ...
+      
+    </p>
+  
+  <h5> Pass mark is {{quiz_info.pass_mark }}. You Scored: </h5>
+  <h5 class="d-none inline-block" id="score"></h5>
+  </div>
+  {% if 'youtube' in quiz_info.resource_link %}
+    <div class="embed-responsive embed-responsive-16by9">
+      <iframe class="embed-responsive-item" src="{{quiz_info.resource_link}}" allowfullscreen></iframe>
+    </div>
+  {% else %}
+    <p>External resources <strong>{{quiz_info.resource_link}}</strong></p>
+  {% endif %}
+  
+  
+  <p class="text-wrap">
+    {{ quiz_info.description|safe }}
+  </p>
+
+
+<form action="" method="post" id="question_form">
+  {% csrf_token %}
+  {% for qtn in quiz %}
+  <div class="border border-1 rounded m-1 px-2">
+    <h4>Question {{ qtn.number }}</h4>
+    <p><span>Level {{ qtn.diff_level }}</span></p>
+    <div class="text-wrap">
+      {{ qtn.question|safe }}
+    </div>
+    {% if qtn.qtn_type == 'text' %}
+    <label for="{{qtn.number}}_text_{{forloop.counter}}">
+      Enter your answer here </label>
+        <input class="form-control" type="text" name="{{qtn.number}}_text_{{forloop.counter}}" 
+        id="{{qtn.number}}_text_{{forloop.counter}}" required>
+    
+    
+    {% elif 'multi' in qtn.qtn_type%}
+      
+      <div class="checkbox-group required" >
+        {% if qtn.ch_a != None %}
+          <p id="{{ qtn.number }}_multi_{{forloop.counter}}_a" class="border rounded m-1 p-2">
+            <input type="checkbox" name="{{ qtn.number }}_multi_{{forloop.counter}}"
+              id="{{ qtn.number }}_multiID_{{forloop.counter}}_a" autocomplete="off" value="a" class="form-check-input">
+            <label for="{{ qtn.number }}_multi_{{forloop.counter}}" class="form-check-label">a ){{qtn.ch_a}}</label>
+            <br>
+          </p>
+        {% endif %}
+        {% if qtn.ch_b != None %}
+          <p id="{{ qtn.number }}_multi_{{forloop.counter}}_b" class="border rounded m-1 p-2">
+            <input type="checkbox" name="{{ qtn.number }}_multi_{{forloop.counter}}"
+              id="{{ qtn.number }}_multiID_{{forloop.counter}}_b" autocomplete="off" value="b" class="form-check-input">
+            <label for="{{ qtn.number }}_multi_{{forloop.counter}}" class="form-check-label"> b ){{qtn.ch_b}}
+            </label>
+            <br>
+          </p>
+        {% endif %}
+        {% if qtn.ch_c != None %}
+          <p id="{{ qtn.number }}_multi_{{forloop.counter}}_c" class="border rounded m-1 p-2"">
+            <input type="checkbox" name="{{ qtn.number }}_multi_{{forloop.counter}}"
+              id="{{ qtn.number }}_multiID_{{forloop.counter}}_c" autocomplete="off" value="c" class="form-check-input">
+            <label for="{{ qtn.number }}_multi_d_{{forloop.counter}}" class="form-check-label">c ){{qtn.ch_c}}
+            </label>
+            <br>
+          </p>
+        {% endif %}
+        {% if qtn.ch_d != None %}
+          <p id="{{ qtn.number }}_multi_{{forloop.counter}}_d" class="border rounded m-1 p-2">
+            <input type="checkbox" name="{{ qtn.number }}_multi_{{forloop.counter}}"
+              id="{{ qtn.number }}_multiID_{{forloop.counter}}_c" autocomplete="off" value="d" class="form-check-input">
+            <label for="{{ qtn.number }}_multi_d_{{forloop.counter}}" class="form-check-label">d ){{qtn.ch_d}}
+            </label>
+            <br>
+          </p>
+        {% endif %}
+        {% if qtn.ch_e != None %}
+          <p id="{{ qtn.number }}_multi_{{forloop.counter}}_e" class="border rounded m-1 p-2">
+            <input type="checkbox" name="{{ qtn.number }}_multi_{{forloop.counter}}"
+              id="{{ qtn.number }}_multiID_{{forloop.counter}}_c" autocomplete="off" value="e" class="form-check-input">
+            <label for="{{ qtn.number }}_multi_d_{{forloop.counter}}" class="form-check-label">e ){{qtn.ch_e}}
+            </label>
+            <br>
+          </p>
+        {% endif %}
+        {% if qtn.ch_f != None %}
+          <p id="{{ qtn.number }}_multi_{{forloop.counter}}_f" class="border rounded m-1 p-2"">
+            <input type="checkbox" name="{{ qtn.number }}_multi_{{forloop.counter}}"
+              id="{{ qtn.number }}_multiID_{{forloop.counter}}_c" autocomplete="off" value="f" class="form-check-input">
+            <label for="{{ qtn.number }}_multi_d_{{forloop.counter}}" class="form-check-label">f ){{qtn.ch_f}}
+            </label>
+            <br>
+          </p>
+        {% endif %}
+   
+      </div>
+    {% elif qtn.qtn_type == 'choice' %}
+    <div class="" >
+      {% if qtn.ch_a != None %}
+          <p id="{{ qtn.number }}_choice_{{forloop.counter}}_a" class="border rounded m-1 p-2"">
+            <input class="form-check-input" type="radio" name="{{ qtn.number }}_choice_{{forloop.counter}}"
+              id="{{ qtn.number }}_choiceID_{{forloop.counter}}" autocomplete="off" value="a">
+            <label for="{{ qtn.number }}_choice_{{forloop.counter}}" class="form-check-label"> a ) {{qtn.ch_a}} </label>
+            <br>
+          </p>
+      {% endif %}
+      {% if qtn.ch_b != None %}
+          <p id="{{ qtn.number }}_choice_{{forloop.counter}}_b" class="border rounded m-1 p-2"">
+            <input class="form-check-input" type="radio" name="{{ qtn.number }}_choice_{{forloop.counter}}"
+              id="{{ qtn.number }}_choice_{{forloop.counter}}" autocomplete="off" value="b">
+            <label for="{{ qtn.number }}_choiceID_{{forloop.counter}}"class="form-check-label">b ) {{qtn.ch_b}} </label>
+            <br>
+          </p>
+      {% endif %}
+      {% if qtn.ch_c != None %}
+          <p id="{{ qtn.number }}_choice_{{forloop.counter}}_c" class="border rounded m-1 p-2"">
+            <input class="form-check-input" class="form-check-input" type="radio" name="{{ qtn.number }}_choice_{{forloop.counter}}"
+              id="{{ qtn.number }}_choiceID_{{forloop.counter}}" autocomplete="off" value="c">
+            <label for="{{ qtn.number }}_choice_{{forloop.counter}}" class="form-check-label">c ) {{qtn.ch_c}} </label>
+            <br>
+          </p>
+      {% endif %}
+      {% if qtn.ch_d != None %}
+          <p id="{{ qtn.number }}_choice_{{forloop.counter}}_d" class="border rounded m-1 p-2"">
+            <input class="form-check-input" type="radio" name="{{ qtn.number }}_choice_{{forloop.counter}}"
+              id="{{ qtn.number }}_choiceID_{{forloop.counter}}" autocomplete="off" value="d">
+            <label for="{{ qtn.number }}_choice_{{forloop.counter}}" class="form-check-label">d ) {{qtn.ch_d}} </label>
+            <br>
+          </p>
+      {% endif %}
+      {% if qtn.ch_e != None %}
+          <p id="{{ qtn.number }}_choice_{{forloop.counter_e" class="border rounded m-1 p-2">
+            <input class="form-check-input" type="radio" name="{{ qtn.number }}_choice_{{forloop.counter}}"
+              id="{{ qtn.number }}_choiceID_{{forloop.counter}}" autocomplete="off" value="e">
+            <label for="{{ qtn.number }}_choice_{{forloop.counter}}" class="form-check-label">e ) {{qtn.ch_e}} </label>
+            <br>
+          </p>
+      {% endif %}
+      {% if qtn.ch_f != None %}
+          <p id="{{ qtn.number }}_choice_{{forloop.counter}}_f" class="border rounded m-1 p-2"">
+            <input class="form-check-input" type="radio" name="{{ qtn.number }}_choice_{{forloop.counter}}"
+              id="{{ qtn.number }}_choiceID_{{forloop.counter}}" autocomplete="off" value="f">
+            <label for="{{ qtn.number }}_choice_{{forloop.counter}}"class="form-check-label">f ) {{qtn.ch_f}} </label>
+            <br>
+          </p>
+      {% endif %}
+   
+    </div>
+    {% endif %}
+    <br>
+    <div id="{{ qtn.number}}_mark"></div>
+    {% if qtn.hint %}
+      <div>
+        <div >
+          <div class="d-none border border-1 border-dark py-1 px-2 rounded m-1" id="hintId_{{qtn.number}} text-wrap">
+            {{ qtn.hint|safe }}
+          </div>
+            <button type="button" class="hint btn btn-outline-primary py-1 px-2" id="hint_{{qtn.number}}">
+              <p class="m-0">Hint</p>
+              <p class="d-none m-0">Hide Hint</p>
+            </button>
+            
+        </div>
+        
+      </div>
+    {% endif %}
+    <div>
+      <p class="d-none border border-1 border-dark py-1 px-2 rounded text-wrap m-1" id="expl_{{qtn.number}}"></p>
+      <button class="d-none btn btn-outline-primary explanation" id="expl_{{qtn.number}}_x">
+        <p class="m-0">Show Explanation</p>
+        <p class="d-none m-0">Hide Explanation</p>
+      </button>
+      
+      <!-- <p class="d-none explanation_notes " id="answer"></p> -->
+    </div>
+    
+    <br>
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-primary m-2" id="submit_btn">Check my Answers</button>
+</form>
+<div id="try_again" class="d-none mx-2">
+  <button class="btn btn-primary text-white">
+    <a class="text-white" href="{% url 'qna:qtn_list' quiz_info.slug %}">Try Again</a>
+  </button>
+</div>
+
+<div id="feedback__">
+
+</div>
+</div>
+
+</div>
+
+
+{% endblock %}
+<!-- ------- scripts --------- -->
+{% block scripts %}
+{{ block.super }}
+
+<script>
+  $(document).ready(function () {
+    $('.hint').click(function (e) {
+      // the actual element. can be used as identifier
+      // e is jquery event
+      // how to toggle text from Hint to Hide Hint
+      // read about toggle
+      e.preventDefault()
+      $(this).siblings().toggleClass('d-none')
+      $(this).children().toggleClass('d-none')
+
+      //
+
+
+      ////console.log(this)
+    })
+    $('.explanation').click(function (e) {
+
+      e.preventDefault()
+      $(this).siblings().toggleClass('d-none')
+      $(this).children().toggleClass('d-none')
+
+      //
+
+
+      //console.log(this)
+    })
+    ///
+    tick = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-check"viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" /> </svg>'
+
+    cross = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox = "0 0 16 16" ><path        d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg >'
+    // ajax
+
+    $('#mark').html(cross) 
+    $('div.checkbox-group.required :checkbox:checked').length > 0
+    $("#question_form").submit(function (event) {
+      event.preventDefault();
+      $('#submit_btn').addClass('d-none')
+      $('#try_again').removeClass('d-none') 
+      $('#mark').innertext = 'cross'
+      $.ajax({ // key: value pairs
+        data: $(this).serialize(),
+        type: 'post',
+        url: $(this).attr('action'),
+        success: function (response) {
+          //console.log(response);
+          $.each(response, function (key, val) {
+            $('#score').removeClass('d-none')
+            //$('#feedback').append("<h1>" + key + "<h1>", val)
+            if (val == 'correct') {
+              //console.log('-----Answer is true-------------')
+              $('#' + key).addClass('border border-1 border-success')
+              
+              y = key.slice(0, 1)
+              $('#' + y + '_mark').html(tick)
+              //console.log(y)
+            }
+            else {
+              if (val == 'wrong') {
+                //console.log('-----Answer is wrong-------------')
+                $('#' + key).addClass('border border-1 border-danger')
+                y = key.slice(0,1)
+                $('#' + y + '_mark').html(cross)
+                //console.log(y)
+              }
+              else if (val == 'halfcorrect') {
+                $('#' + key).addClass('border border-1 border-success')
+              }
+            else { // add unmarked class
+                if (val == 'unmarked') {
+                  //console.log('-----Answer is unmarked-------------')
+                  $('#' + key).addClass('unmarked')
+                  y = key.slice(0, 1)
+                  $('#' + y + '_mark').html(cross)
+                  //console.log(y)
+                }
+              }
+            }
+            
+            if (key == 'score') {
+              $('#' + key).text(val)
+            }
+            if (key.indexOf('expl') == 0) {
+              $('#' + key + '_x').removeClass('d-none')
+              $('#' + key).html(val)
+            }
+
+          })
+        },
+        error: function (request, status, error) {
+          //console.log('error Utter failure')
+        }
+      })
+
+
+    })
+
+  })
+
+
+</script>
+{% endblock %}
+
+'quiz': quiz,

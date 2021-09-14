@@ -1,0 +1,106 @@
+{% extends "../index.html" %}
+{% load crispy_forms_tags static %}
+{% block title %}
+{{ block.super }} -Search
+{% endblock title %}
+
+{% block Content %}
+<div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+    <div class="col-md-6 px-0">
+        
+    </div>
+</div>
+
+<div class="row g-5">
+    
+    <div class="">
+<form action="" method="get">
+    {{ search_form|crispy }}
+    <br>
+    <button type="search" class="btn btn-primary">Submit</button>
+    
+</form>
+{% if q %}
+    {% if result_b %}
+    <div class="card">
+        <div class="card-title m-1"><p class="m-1 p-0"> <strong>Authors matching query</strong> </p></div>
+        <div class="card-body p-1">
+            {% for creator in result_b %}
+            <div class="card-text p-1">
+                <a class="btn p-1 m-1 btn-outline-dark" href="{% url 'qna:creator_page' creator.display_name %}">{{ creator }}</a>
+            </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+    {% endif %}
+    
+    {% for item in results %}
+    {% if forloop.counter == 1 %}
+        {% with results.count as x  %}
+        Found {{x}} result{{x|pluralize }} matching '{{q}}'
+        
+        {% endwith %}
+    {% endif %}
+    <div>
+        <div class="card mb-2">
+            <div class="card-body">
+                <h4 class="card-title"> <a class="link-dark" href="{{item.get_absolute_url}}">{{ item.name }}</a></h4>
+                <p class="card-text">Created on: {{ item.created|date:'M Y' }} by {{ item.creator.display_name }}.</p>
+                <p class="card-text">{{ item.short_desc|truncatewords:30 }}</p>
+                <p class="card-text"><small class="text-muted">Pass mark: {{ item.pass_mark }}</small>
+            </div>
+        </div>
+    </div>
+     
+    {% empty %}
+    <h5> No quiz matching your query. Please enter more detailed search or different</h5>
+    {% endfor %}
+
+
+{% endif %}
+    </div>
+
+</div>
+
+
+
+{% endblock Content %}
+{% comment %}
+  
+<div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+    <div class="col p-4 d-flex flex-column position-static">
+        <strong class="d-inline-block mb-2 text-success">{{ item.category }}</strong>
+        <h3 class="mb-0">{{ item }}</h3>
+        <div class="mb-1 text-muted">Published on {{ item.created }} by <a
+                href="{% url 'qna:creator_page' 'paul' %}">{{ item.creator.bio }}</a></div>
+        <p class="mb-auto">{{ item.short_desc|safe }}</p>
+        class="stretched-link">Continue reading</a>
+    </div>
+
+</div>
+
+{% if results %}
+
+<div class="pagination">
+    <span class="step-links">
+        <!-- results == page_object -->
+        {% if results.has_previous %}
+
+        <a href="?q={{ q }}&page= 1"> first </a>
+        <a href="?q={{ q }}&page= {{ results.previous_page_number }}">previous</a>
+
+        {% endif %}
+        <span class="current">
+            Page {{ results.number }} of {{ results.paginator.num_pages }}
+        </span>
+        {% if results.has_next %}
+        <a href="?q={{ q }}&page= {{ results.next_page_number }}">Next</a>
+        <a href="?q={{ q }}&page= {{ results.paginator.num_pages  }}">Last</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endif %}
+
+{% endcomment %}

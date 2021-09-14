@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+{% block title %}
+{{ block.super }} - Upload Images
+
+{% endblock title %}
+
+{% block Content %}
+<h3>To do</h3>
+<ol>
+    <li>Images not loading to media url</li>
+    <li>more testing</li>
+</ol>
+<form action="" method="post" >
+    {% csrf_token %}
+    {{formset.management_form}}
+    <table>
+        {% for form in formset  %}
+        <tr>
+            <td>
+                <ul> 
+                    <p>{{ forloop.counter }}  {{ form.as_ul }}</p>
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    <input type="hidden" value="false" name="add_images" id="add_images">
+    <button class="btn btn-secondary" id="add_items_button">Add more images</button>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock Content %}
+{% block scripts %}
+{{ block.super }}
+    <script>
+        $(document).ready(function () {
+                $('#add_items_button').on('click', function (e) {
+                    $('#add_images').val('true')
+                    console.log($('#add_images').val('true'))
+                })
+            })
+    </script>
+    
+{% endblock scripts %}

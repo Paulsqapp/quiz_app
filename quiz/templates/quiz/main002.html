@@ -1,0 +1,259 @@
+<!doctype html>
+{% load static %}
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A quiz blog">
+    <meta name="author" content="Paul Kuria, Paul Kiore">
+    <meta name="generator" content="Qz-App 0.84.0">
+    <title>Qz-App</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootswatch-5/dist/pulse/bootstrap.min.css'  %}">
+
+    <!-- Favicons -->
+    <meta name="theme-color" content="#7952b3">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    
+    </svg>
+
+    <style>
+
+        #card1 {
+            background-image: url('{% static "carousel/bg6.jpg" %}');
+            background-color: blueviolet;
+        }
+        #card2{
+            background-image: url('{% static "carousel/bg1.jpg" %}');
+            background-color: violet;
+        }
+        #card3{
+            background-image: url('{% static "carousel/bg3.jpg" %}');
+            background-color: rgb(255, 0, 191);
+        }
+
+       .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+        }
+
+        .feature-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        color: #fff;
+        border-radius: .75rem;
+        }
+
+        .icon-link {
+        display: inline-flex;
+        align-items: center;
+        }
+        .icon-link > .bi {
+        margin-top: .125rem;
+        margin-left: .125rem;
+        transition: transform .25s ease-in-out;
+        fill: currentColor;
+        }
+        .icon-link:hover > .bi {
+        transform: translate(.25rem);
+        }
+
+        .icon-square {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+        border-radius: .75rem;
+        }
+
+        .rounded-4 { border-radius: .5rem; }
+        .rounded-5 { border-radius: 1rem; }
+
+        .text-shadow-1 { text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25); }
+        .text-shadow-2 { text-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25); }
+        .text-shadow-3 { text-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25); }
+
+        .card-cover {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        }
+
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+</head>
+    <!-- Custom styles for this template -->
+    
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light p-1 m-1" aria-label="Eighth navbar example mb-1 p-1" style="background-color: rgb(116, 42, 185);">
+        <div class="container">
+            <h3><a class="navbar-brand text-white" href="{% url 'qna:home' %}">Qz-App</a></h3>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07"
+                aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarsExample07">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" aria-current="page" href="{% url 'qna:all_quizzes' %}"> All Quizzes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="{% url 'qna:sample_stats' %}">Sample Stats</a>
+                    </li>
+                    
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active text-white" href="#" id="dropdown07" data-bs-toggle="dropdown"
+                            aria-expanded="false">My Account</a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown07">
+                            {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'qna:creator' %}">Create Quiz</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a></li>
+                            
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Create Account</a></li>
+                            {% endif %}
+                            
+                        </ul>
+                    </li>
+                </ul>
+                <form method="GET" action="{% url 'qna:qna_search' %}" id="someTextBox">
+                    <input class="form-control rounded" type="search" placeholder="Search" aria-label="Search" name="q">
+                </form>
+                
+            </div>
+        </div>
+    </nav>
+<div class="container px-4 py-2" id="custom-cards">
+    <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+        <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" id="card1">
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                    <h4 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">For YouTube Content Creators'</h4>
+                    <p>Create free quizzes, trivias and polls to accompany your video tutorials to better understand your audience and improve their learning experience</p>
+                    <ul class="d-flex list-unstyled mt-auto">
+                        <li class="d-flex align-items-center me-3">
+                            <a href="{% url 'qna:webquiz' %}">Create a Quiz</a>
+                        
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <a href="{% url 'qna:qtn_list' 'astronomy-quiz2' %}">See Sample Quiz</a>
+                        
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" id="card2">
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                    <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">For Webiners and Conferences
+                    </h2>
+                    <p>Turn passive listeners to active listeners by surprising your audience with challenge/questions.</p>
+                    <ul class="d-flex list-unstyled mt-auto">
+                        <li class="d-flex align-items-center me-3">
+                            <a href="{% url 'qna:webquiz' %}">Create a Quiz</a>
+                             
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <a href="{% url 'qna:sample_stats' %}">See Statistics Page</a>
+                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" id="card3" >
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                    <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Wisdom of the Crowd...</h2>
+                    <p>Create a Quiz, Poll, questionnare and collect the public opinion</p>
+                    <ul class="d-flex list-unstyled mt-auto">
+                        <li class="d-flex align-items-center me-3">
+                            <a href="{% url 'qna:webquiz' %}">Create a Quiz</a>
+                        
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <a href="{% url 'qna:qtn_list' 'astronomy-quiz2' %}">See Sample Quiz</a>
+                        
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="text-center">
+    <hr class="m-2">
+    <p class="mb-2 text-center">
+        Qz-App is being built & maintained by <strong>Paul Kuria</strong> , Electrical Engineer, AI student and Software Developer, to help others learn better & escape Tutorial Hell
+        <br>
+        
+        <p>
+            You may  
+            <a href="https://twitter.com/django_paul?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-size="large"
+                data-show-count="false">Follow @django_paul</a>
+                or
+            <a type="button" class="btn btn-danger rounded m-1 p-1" href="{% url 'qna:contactus' %}" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z" />
+                </svg>
+                Email me
+            </a>
+        </p>    
+    </p>
+</footer>
+<script src="{% static 'js/jquery-3.5.1.js'  %}"></script>
+<script src="{% static 'css/bootswatch-5/js/bootstrap.bundle.min.js'  %}"></script>
+<script>
+    /*
+    ///$('#someTextBox').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                alert('You pressed a "enter" key in textbox');
+            }
+            //Stop the event from propogation to other handlers
+            //If this line will be removed, then keypress event handler attached 
+            //at document level will also be triggered
+            event.stopPropagation();
+        });
+    */
+</script>
+</body>
+</html>

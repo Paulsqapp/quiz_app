@@ -1,0 +1,183 @@
+<!doctype html>
+{% load static %}
+<html lang="en" class="h-100">
+
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="A quiz blog and quiz stats">
+   <meta name="author" content="Paul Kuria, Paul Kiore">
+   <meta name="generator" content="Qz-App 0.84.0">
+   <title>Qz-App Stats</title>
+
+   <!-- Bootstrap core CSS -->
+   <link rel="stylesheet" href="{% static 'css/bootswatch-5/dist/pulse/bootstrap.min.css'  %}">
+
+   <!-- Favicons -->
+   <meta name="theme-color" content="#7952b3">
+   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+
+   </svg>
+
+   <style type="text/css">
+      canvas {
+         -moz-user-select: none;
+         -webkit-user-select: none;
+         -ms-user-select: none;
+      }
+   </style>
+</head>
+<body>
+   {% include "quiz/navbar.html" %}
+   <div class="container">
+      <div class="messages">
+
+         {% if messages %}
+
+         {% for msg in messages %}
+         <div class="card" style="background-color:rgb(201, 248, 146); ">
+            <div class="card-body">
+               <h5 class="card-title"> {{ msg }} </h5>
+            </div>
+         </div>
+
+         {% endfor %}
+         {% endif %}
+      </div>
+      <p>*** <strong> To suggest more stat. parameters for your quiz/poll, <a href="{% url 'qna:contactus' %}">email
+               us</a> </strong> and we shall add. </p>
+      <div class="row  d-flex justify-content-center">
+         <h4>Statistics for {{quiz.name}}</h4>
+         <hr>
+         <ul>
+            <li>
+               {{quiz.num_attempts}} persons attempted the quiz between {{quiz.start_date|date:'Y-m-d H:i'}} and today. 
+               {{quiz.pass_rate}} scored above {{quiz.pass_mark}}. 
+               <strong>A Pass rate of {{rate}} %.</strong>
+            </li>
+            <li>
+               Your quiz had 50 unique visitors in the last 30 days
+            </li>
+         </ul>
+
+
+         <p class="m-3">The graph below shows number of students who answered each question correctly. </p>
+      </div>
+      <div id="container2" style="width: 75%;">
+         <canvas id="canvas2"></canvas>
+      </div>
+      <hr>
+      <div class="bd-example">
+         <h4 class="d-flex justify-content-center">Table of Results</h4>
+         <div class="d-flex justify-content-center">
+            <table class="table table-bordered border-primary table-hover" style="width: 50%;">
+               <thead>
+                  <tr>
+                     <th scope="col">Question Number</th>
+                     <th scope="col">Answered Correctly (out of {{quiz.num_attempts}})</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {% if results2 %}
+                  
+                    {% for i,j in results2.items %}
+                    
+                      <tr>
+                        <th class="align-middle" scope="row">{{i}}</th>
+                        <td class="align-middle">{{j}}</td>
+                      </tr>
+                    {% endfor %}
+                  {% endif %}
+                  
+               </tbody>
+
+            </table>
+         </div>
+
+      </div>
+   </div>
+   {% include "quiz/footer.html" %}
+   <script src="{% static 'js/jquery-3.5.1.js'  %}"></script>
+   <script src="{% static 'css/bootswatch-4/js/bootstrap.min.js'  %}"></script>
+   <script src="{% static 'Chart.js-master/dist/Chart.min.js' %}"></script>
+   <script src="{% static 'Chart.js-master/samples/utils.js' %}"></script>
+         
+      <script>
+         $(document).ready(function () {
+
+
+            var myData = JSON.parse('{{results|escapejs}}')
+            console.log('response', myData)
+            var labels = Object.keys(myData)
+            var values = Object.values(myData)
+            var minValue = Math.min(...values)
+            var yStart = minValue - Math.round(0.1* minValue)
+            console.log(minValue )
+            console.log(yStart)
+            const data = {
+               labels: labels,
+               label: 'Quiz questions',
+               datasets: [{
+                  data: values,
+                  label: 'Question',
+                  backgroundColor: [
+                     'rgba(255, 99, 132, 0.5)',
+                     'rgba(255, 159, 64, 0.5)',
+                     'rgba(255, 205, 86, 0.5)',
+                     'rgba(75, 192, 192, 0.5)',
+                     'rgba(54, 162, 235, 0.5)',
+                     'rgba(153, 102, 255, 0.5)',
+                     'rgba(201, 203, 207, 0.5)',
+                     'rgba(255, 99, 132, 0.5)',
+                     'rgba(255, 205, 86, 0.5)',
+                     'rgba(153, 102, 255, 0.5)',
+                  ],
+                  borderColor: [
+                     'rgba(255, 99, 132,)',
+                     'rgba(255, 159, 64,)',
+                     'rgba(255, 205, 86,)',
+                     'rgba(75, 192, 192,)',
+                     'rgba(54, 162, 235,)',
+                     'rgba(153, 102, 255,)',
+                     'rgba(201, 203, 207,)',
+                     'rgba(255, 99, 132,)',
+                     'rgba(255, 205, 86,)',
+                     'rgba(153, 102, 255,)',
+                  ],
+                  borderWidth: 1
+               }]
+            };
+            var ctx = document.getElementById('canvas2').getContext('2d'); //get element
+            var myBarChart = new Chart(ctx, {
+               type: 'bar',
+               data: data,
+               options: {
+                  responsive: true,
+
+                  scales: {
+
+                     beginAtZero: true,
+                     yAxes: [{
+                        min: yStart,
+                        scaleLabel: {
+                           display: true,
+                           labelString: 'Answered Correctly'
+                        }
+                     }],
+                     xAxes: [{
+                        scaleLabel: {
+                           display: true,
+                           labelString: 'Question Number'
+                        }
+                     }],
+
+                  }
+               }
+            })
+
+         })   
+      </script>
+
+
+</body>
+</html>

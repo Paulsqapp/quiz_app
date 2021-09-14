@@ -1,0 +1,184 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ block.super }} - Upload Quiz
+
+{% endblock title %}
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css'  %}">
+{% endblock css %}
+{% block Content %}
+<h1>
+    <ol>
+        <li>Manually render then style</li>
+        <li>Initial value conditions</li>
+    </ol>
+</h1>
+<div class="messages">
+
+    {% if messages %}
+
+    {% for msg in messages %}
+    <div class="card" style="background-color:rgb(201, 248, 146); ">
+        <div class="card-body">
+            <h5 class="card-title"> {{ msg }} </h5>
+        </div>
+    </div>
+
+    {% endfor %}
+    {% endif %}
+</div>
+
+<div class="row g-5">
+    <div class="col-md-8">
+        <h3>Part B - Create or edit ***quiz name*** {{xyz}} quiz</h3>
+        <p><b>Minimum</b> number of quiz questions is 3 and <b>Maximum</b> is 8 </p>
+        <p>Number of questions uploaded {{ qtn_count }} </p>
+        fields=(
+        'number', 'qtn_type', 'diff_level', 'question', 'answer',
+        'explanation','hint','ch_a','ch_b','ch_c', 'ch_d','ch_e','ch_f' ),
+        <form action="" method="post">
+            <div class="controls">
+                brr
+                {% csrf_token %}
+                {{ form.errors }}
+                {{formset.management_form}}
+                <div class="accordion" id="accordionForm">
+                    
+                    {% for form in formset  %}
+                    {{ form.id }}
+                    <div class="accodion-item">
+                       
+                        <h2 class="accordion-header" id="heading{{ forloop.counter }}"> Question {{ forloop.counter }}
+                        <button class="accordion-button" type="button" data-bs-toggle="collable" data-bs-target="collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}"></button>
+                        </h2>
+                        <div  id="collapse{{ forloop.counter }}" class="accordion-collapse collapse show" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent='#accordionForm'>
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.number|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.diff_level|as_crispy_field }}
+                                    </div>
+                                </div>
+                                
+                                <p class="form-class">
+                                    {{ form.question|as_crispy_field }}
+                                
+                                </p>
+                                <div class="xyz" id=''>
+                                
+                                    Choose Type of Question {{ form.qtn_type }}
+                                
+                                
+                                    <div class="d-none choices">
+                                        <p>
+                                            {{ form.ch_a|as_crispy_field }}
+                                
+                                        </p>
+                                        <p>
+                                            {{ form.ch_b|as_crispy_field }}
+                                
+                                        </p>
+                                        <p>
+                                            {{ form.ch_c|as_crispy_field }}
+                                
+                                        </p>
+                                        <p>
+                                            {{ form.ch_d|as_crispy_field }}
+                                
+                                        </p>
+                                        <p>
+                                            {{ form.ch_e|as_crispy_field }}
+                                
+                                        </p>
+                                        <p>
+                                            {{ form.ch_f|as_crispy_field }}
+                                
+                                        </p>
+                                
+                                    </div>
+                                
+                                </div>
+                                
+                                <p class="form-class">
+                                    {{ form.answer|as_crispy_field }}
+                                
+                                </p>
+                                <p class="form-class">
+                                    {{ form.explanation|as_crispy_field }}
+                                
+                                </p>
+                                <p class="form-class">
+                                    {{ form.hint|as_crispy_field }}
+                                
+                                </p>
+                                {% if formset.can_delete %}
+                                {{ form.DELETE|as_crispy_field }}
+                                
+                                {% endif %}
+                                <hr>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="hidden" value="false" name="add_qtn" id="add_qtn">
+            <button type="submit" class="btn btn-primary" id="add_items_button">Save and Add More Question</button>
+            <button type="submit" class="btn btn-primary">Submit quiz</button>
+        </form>
+    </div>
+</div>
+{{ formset|crispy }}
+{% endblock Content %}
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'jquery-ui/jquery-ui.js'  %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#add_items_button').on('click', function (e) {
+            $('#add_qtn').val('true')
+            console.log($('#add_qtn').val('true'))
+        }),
+        x = $('.xyz > select')
+        console.log('xxxxxxxxxxxxxxxxxxxxx')
+        console.log(x)
+        y = $('.xyz choices').html()
+        console.log('yyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
+        console.log(y)
+        if (x != 'text') {
+            console.log('initial condition')
+            console.log($('.xyz > select').siblings())
+            console.log('initial condition')
+            $('.xyz > select').siblings().toggleClass('d-none')
+        }   
+        $(function () {
+            $('#accordionForm').accordion()
+        }) 
+        
+        x.on('change', function (e) {
+            console.log('on change 001')
+            console.log($(this).val())
+            if ($(this).val() != 'text') {
+                console.log('on change')
+                console.log($(this).val())
+                $(this).siblings().removeClass('d-none')
+            }
+            if ($(this).val() == 'text') {
+                $(this).siblings().addClass('d-none')
+                $('label').removeClass('d-none')
+            }
+        })
+        console.log(x)
+        //console.log($('.xyz').sibling())
+
+
+    })
+</script>
+
+{% endblock scripts %}

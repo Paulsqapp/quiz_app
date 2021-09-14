@@ -1,0 +1,12 @@
+{% include "index.html" %}
+{% block title %}
+{{ block.super }} - Create Category
+
+{% endblock title %}
+
+{% block Content %}
+<div>
+   <h4>Error occured while processing your request</h4>
+   <p>Return <a href="{% url 'qna:home' %}">Home</a></p>
+</div>
+{% endblock Content %}

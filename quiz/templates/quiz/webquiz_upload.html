@@ -1,0 +1,174 @@
+{% extends "index.html" %}
+
+{% load crispy_forms_tags static %}
+{% block title %}
+{{ block.super }} - Upload Quiz
+
+{% endblock title %}
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css'  %}">
+{% endblock css %}
+{% block Content %}
+
+<div class="messages">
+
+    {% if messages %}
+
+    {% for msg in messages %}
+    {% if msg.tags == 'error'  %}
+        <div class="alert alert-danger" role="alert">
+            <h5 class="card-title"> {{ msg }} </h5>
+        </div>
+    {% endif %}
+    <div class="alert alert-success" role="alert">
+        {% if msg.tags == 'success' %}
+            <h5> Preview Quiz <a href="{{ quiz_instance.get_absolute_url }}">{{quiz_instance}}</a></h5>
+        {% endif %}
+    </div>
+    
+    
+    {% endfor %}
+    {% endif %}
+</div>
+
+<div class="row g-5">
+    <div class="">
+        <h3>Part B - Create or edit {{quiz_instance}} quiz</h3>
+        <p><b>Minimum</b> number of quiz questions is 4 and <b>Maximum</b> is 10 </p>
+        
+        <form action="" method="post">
+            {{ form.media }}
+            <div class="controls">
+                
+                {% csrf_token %}
+                {{ form.errors }}
+
+                {{formset.management_form}}
+                
+                    
+                    {% for form in formset  %}
+                    {{ form.media }}
+                    {{ form.id }}
+                <div class="qty_{{ forloop.counter}} border rounded p-2 mb-2">
+                    
+                    {% if formset.can_delete %}
+                    <div class="row">
+                        <div class="col">
+                            Mark question for deletion
+                        </div>
+                        <div class="col">
+                            {{ form.DELETE|as_crispy_field }}
+                        </div>
+                    </div>
+                                        
+                    {% endif %}
+                    <div class="row">
+                        <div class="col">
+                            {{ form.number|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.diff_level|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <p class="form-class">
+                        {{ form.question|as_crispy_field|safe }}
+                    
+                    </p>
+                    <div class="xyz" id=''>
+                       
+                        Choose Type of Question     {{ form.qtn_type }}
+                        
+                        
+                        <div class="d-none choices">
+                            <p>
+                                {{ form.ch_a|as_crispy_field }}
+                            
+                            </p>
+                            <p>
+                                {{ form.ch_b|as_crispy_field }}
+                             
+                            </p>
+                            <p>
+                                {{ form.ch_c|as_crispy_field }}
+                             
+                            </p>
+                            <p>
+                                {{ form.ch_d|as_crispy_field }}
+                             
+                            </p>
+                            <p>
+                                {{ form.ch_e|as_crispy_field }}
+                             
+                            </p>
+                            <p>
+                                {{ form.ch_f|as_crispy_field }}
+                               
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <p class="form-class">
+                        {{ form.answer|as_crispy_field }}
+                     
+                    </p>
+                    <p class="form-class">
+                        {{ form.hint|as_crispy_field|safe }}
+                    
+                    </p>
+                    <p class="form-class">
+                        {{ form.explanation|as_crispy_field|safe }}
+                       
+                    </p>
+                    
+                 
+                </div>
+                    {% endfor %}
+                
+            </div>
+            <input type="hidden" value="false" name="add_qtn" id="add_qtn">
+            
+            <button type="submit" class="btn btn-primary">Upload Quiz/Add Question</button>
+        </form>
+    </div>
+</div>
+{% endblock Content %}
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'jquery-ui/jquery-ui.js'  %}"></script>
+<script>
+    $(document).ready(function () {
+        
+        if (x != 'text') {
+            ////console.log('initial condition')
+            ////console.log($('.xyz > select').siblings())
+            ////console.log('initial condition')
+            $('.xyz > select').siblings().toggleClass('d-none')
+        }   
+        // accodion
+           
+        
+        x.on('change', function (e) {
+            //console.log('on change 001')
+            //console.log($(this).val())
+            if ($(this).val() != 'text') {
+                //console.log('on change')
+                //console.log($(this).val())
+                $(this).siblings().removeClass('d-none')
+            }
+            if ($(this).val() == 'text') {
+                $(this).siblings().addClass('d-none')
+                $('label').removeClass('d-none')
+            }
+        })
+        //console.log(x)
+        ////console.log($('.xyz').sibling())
+
+
+    })
+</script>
+
+{% endblock scripts %}

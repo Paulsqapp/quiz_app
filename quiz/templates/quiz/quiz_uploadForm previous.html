@@ -1,0 +1,95 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ block.super }} - Upload Quiz
+
+{% endblock title %}
+
+{% block Content %}
+<div class="pending">
+    <ol>
+        <li>Styling. output each item individually</li>
+        <li>rename fields</li>
+        <li>create category link to new page</li>
+        <li>Upload of images</li>
+        link to upload images
+        save doc and get id
+        pass id in url
+        ----
+        if paid, next button to upload images
+    </ol>
+</div>
+<div class="messages">
+    
+    {% if messages %}
+        
+        {% for msg in messages %}
+        <div class="card" style="background-color:rgb(164, 235, 84); border-color:darkblue;">
+            <div class="card-body">
+                <h5 class="card-title"> {{ msg }} </h5>
+            </div>
+        </div>
+            
+        {% endfor %}
+    {% endif %}
+</div>
+<h4> Upload Excel file or <a href="">Create Quiz using Webapp</a></h4>
+<p> Create your quiz by uploading an excel file <b>Link to formart</b>. </p>
+<p>
+    <a href="{% url 'qna:create_category' %}" blank="True">create category if not on the list</a>
+</p>
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="controls">
+                    {% csrf_token %}
+                    {{ form.errors }}
+                    <label for="id_creator">Creator:</label> <input type="text" class="form-control" name="creator"
+                        value="paul" maxlength="255" required id="id_creator" readonly>
+                    <label for="id_category">Select a Category for your Quiz:</label> <select name="category"
+                        class="form-control" id="id_category" multiple>
+                        <option value="4">banking</option>
+                        <option value="3">main</option>
+                    </select>
+                    <p>
+                        <a href="{% url 'qna:create_category' %}" blank="true"> Or create category if not on the list</a>
+                    </p>
+
+                    <label for="id_name">Quiz Title </label>
+                    <input id="id_name" type="text" name="name" class="form-control"
+                        placeholder="Please enter a Quiz name/title e.g. Linear Algebra" required="required"
+                        maxlength="255" data-error="Firstname is required.">
+
+                    <label for="id_publish">Publish (check) or save as draft:</label> <input type="checkbox"
+                        name="publish" id="id_publish">
+                    <br>
+                    <label for="id_payment">Payment:</label> <input type="checkbox" name="payment" id="id_payment"></p>
+
+                    <label for="id_pass_mark">Pass mark:</label> <input class="form-control" type="number"
+                        name="pass_mark" min="0" id="id_pass_mark">
+                </div>
+                <label for="id_description">Description:</label> <textarea name="description" cols="40" rows="10"
+                    class="form-control" placeholder="A short description or notes about the quiz" required
+                    id="id_description">
+            </textarea>
+                <label for="id_excelFile">Upload excel file with quiz:</label> <input type="file" class="form-control"
+                    name="excelFile" required id="id_excelFile">
+                <label for="id_resource_link">Link to external resources e.g. youtube video or website:</label> <input
+                    type="text" name="resource_link" maxlength="150" class="form-control" id="id_resource_link">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+        </div><!-- /.8 -->
+
+    </div> <!-- /.row-->
+
+</div> <!-- /.container-->
+</div>
+
+<h1> crispy_forms_tags</h1>
+{{ form|crispy}}
+
+{% endblock Content %}

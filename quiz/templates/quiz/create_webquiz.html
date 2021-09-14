@@ -1,0 +1,108 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ block.super }} - Upload Quiz
+
+{% endblock title %}
+
+{% block Content %}
+<div >
+    
+    <div class="row g-5">
+        
+        <div class="">
+            <div class="messages">
+            
+                {% if messages %}
+            
+                {% for msg in messages %}
+                <div class="card" style="background-color:rgb(164, 235, 84); border-color:darkblue;">
+                    <div class="card-body">
+                        <h5 class="card-title"> {{ msg }} </h5>
+                    </div>
+                </div>
+            
+                {% endfor %}
+                {% endif %}
+            </div>
+            <h3>Part A</h3>
+            <form action="" method="post">
+                <div class="controls">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    <p> 
+                        {{ form.name|as_crispy_field }}
+                        <span>** Name/Title of your quiz</span>
+                    </p>
+                    <div class="row">
+                        <div class="col">
+                            <div id="div_id_start_date" class="form-group">
+                    
+                                <label for="id_start_date" class=" requiredField">
+                                    Start date<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="date" name="start_date" value="" class="datetimeinput form-control" required
+                                        id="id_start_date"><input type="hidden" name="initial-start_date" value=""
+                                        id="initial-id_start_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div id="div_id_end_date" class="form-group">
+                                <label for="id_end_date" class=" requiredField">
+                                    End date<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="date" name="end_date" value="" class=" datetimeinput form-control" required
+                                        id="id_end_date"><input type="hidden" name="initial-end_date" value="" id="initial-id_end_date">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        {{ form.category|as_crispy_field }}
+                        <span>** Select a category for your quiz or 
+                            <a href="{% url 'qna:create_category' %}">create category if not in the list</a> </span>
+                    </p>
+                    <p>
+                        {{ form.resource_link|as_crispy_field }}
+                        <span>** Link e.g Youtube to reference material </span>
+                    </p>
+                    <p>
+                        {{ form.payment|as_crispy_field }}
+                        <span>**Check for free statistics for the trial period, but if you found Qz-App helpful, <a class="btn btn-primary" href="https://www.paypal.com/donate?hosted_button_id=GQ5LZCF99W5SA">Donate</a>
+
+                    </p>
+                    <p>
+                        {{ form.pass_mark|as_crispy_field }}
+                        <span>** Help in classifiying users as either passed or failed the quiz </span>
+                    </p>
+                    <p>
+                        {{ form.short_desc|as_crispy_field|safe }}
+                    </p>
+                    <p>
+                        <span> Notes accompaning the quiz </span>
+                        {{ form.description|as_crispy_field|safe }}
+                    </p>
+                
+                </div>
+                <button type="submit" class="btn btn-primary">Proceed to part 2</button>
+            </form>
+        </div>
+        
+    </div>
+</div>
+{% endblock Content %}
+{% block scripts %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        $('#add_items_button').on('click', function (e) {
+            $('#add_qtn').val('true')
+            console.log($('#add_qtn').val('true'))
+        })
+    })
+</script>
+
+{% endblock scripts %}

@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% block title %}
+{% load crispy_forms_tags static %}
+{{ block.super }} - Upload Questions
+
+{% endblock title %}
+{{ block.super }}
+- create account
+{% block Content %}
+<div >
+<div class="row g-5">
+    
+    <div class="">
+        <p>You are logged in as <strong>{{ request.user }}</strong></p>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>
+                {{ form.display_name|as_crispy_field }}
+            </p>
+            <p>
+                {{ form.contact|as_crispy_field }}
+            </p>
+            <p>
+                {{ form.bio|as_crispy_field }}
+            </p>
+            <p>
+                {{ form.profile_pic|as_crispy_field }}
+            </p>
+            
+            <button type="submit" class="btn btn-info">Submit</button>
+        </form>
+    </div>
+    
+</div>
+</div>
+{% endblock Content %}

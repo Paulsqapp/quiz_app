@@ -1,0 +1,231 @@
+{% extends "index.html" %}
+{% load static  %}
+{% block title %}
+{{ block.super }} - Quiz
+{% endblock title %}
+{% block css %}
+{{ block.super }}
+  <style>
+      .choices {
+          border: 1px solid rgb(60, 177, 232);
+          padding: 0.5rem 1rem;
+      }
+      .correct {
+          border: 1px solid rgb(72, 255, 0);
+      }
+      .wrong {
+          border: 1px solid red;
+      }
+      .explanation_notes {
+          border: 1px solid rgb(148, 114, 114);
+          border-radius: 5px;
+          padding: 5px;
+          margin: 1rem;
+      }
+      .hint_val {
+         border: 1px solid rgb(148, 114, 114);
+         border-radius: 5px;
+         padding: 5px;
+         margin: 1rem; 
+      }
+      #description {
+         border: 1px solid rgb(148, 114, 114);
+         border-radius: 5px;
+         padding: 5px;
+         margin: 1rem; 
+      }
+  </style>
+{% endblock css %}
+{{ block.super }}
+{% block Content %}
+qna owners tab: to edit or not
+<a class="d-none" id="" href="/">Try again</a>
+
+
+<h3>
+    Quiz Title : {{ qtn01.name }} 
+</h3>
+<h4>by {{ qtn01.creator }}</h4>
+<h4>Pass mark: {{ qtn01.pass_mark }}% </h4>
+<h4 class="d-none" id="score"></h4>
+<div id="description">
+    <p> {{ qtn01.description }} </p>
+</div>
+<div>
+    <p id="resource_link">Additional notes/reading material <a href="youtube/{{ qtn01.resource_link }}">{{ qtn01.resource_link }}</a> </p>
+</div>
+
+<br>
+<form action="" method="post" id="question_form">
+    {% csrf_token %}
+    {% for values in qtn %}
+    <div id="{{ values.indices }}">
+        <h3> Question {{ values.number}} </h3>
+        <p>{{ values.question }} </p>
+        
+        <!-- -------start options--------- -->
+        {% if values.ans_options %}
+            
+            {% for x in values.ans_options %}
+            {% for opt in x %}
+                {% if None or '' in opt %}
+                
+                    {{break}}
+            
+                {% else %}
+                {% if 'multi' in values.answer_type %} 
+                    <p class="choices"  id="ans_{{ values.indices}}_{{opt|first}}">
+                        <input type="checkbox" name="ans_{{ values.indices}}" id="ansId_{{ values.number}}" value="{{opt|first}}" >
+                        <label for="ans_{{ values.number}}">
+                            {{opt|first}} ) {{opt|last}}
+                        </label>
+                    </p>
+                {% elif values.answer_type == 'choice' %}
+                    <p class="choices"  id="ans_{{ values.indices}}_{{opt|first}}">
+                        <input type="radio" name="ans_{{ values.indices}}" id="ansId_{{ values.number}}" value="{{opt|first}}" required >
+                        <label for="ans_{{ values.number}}">{{opt|first}} ) {{opt|last}}</label>
+                    </p>
+                {% endif %}
+                    
+                {% endif %}
+            {% endfor %}
+            <br>
+            {% endfor %}
+    
+        {% endif %}
+
+    <!-- -------answer text--------- -->
+    {% if values.answer_type == 'text' %}
+    <textarea class="" name="text_{{values.indices}}" id="text_{{values.indices}}" cols="100" rows="5" placeholder="Your answer here dummy " required >Your answer here dummy </textarea>
+    <br>
+    {% endif %}
+    <!-- -------hint text--------- -->
+    {% if values.hint %}
+    <div >
+        <button class="hint btn btn-secondary" id="hint_{{values.number}}" >
+            <p>Hint</p> <p class="d-none">Hide Hint</p> </button>
+        <p class="d-none hint_val" id="hintId_{{values.number}}">{{ values.hint }}</p>
+    </div>
+
+    {% endif %}
+    <hr>
+    <div>
+        <button class="d-none btn btn-primary explanation" id="expl_{{values.number}}_x">
+            <p>Show Explanation</p>
+            <p class="d-none">Hide Explanation</p>
+         </button>
+        <p class="d-none explanation_notes " id="expl_{{values.number}}"></p>
+        <!-- <p class="d-none explanation_notes " id="answer"></p> -->
+    </div>
+    
+    </div>
+    {% endfor %}
+    <button id="submit_btn"  type="submit" class="btn btn-primary">Submit</button>
+    <input type="button" value="">
+    
+</form>
+<div id="try_again" class="d-none">
+    <button  class="btn btn-primary">
+        <a  href="{% url 'qna:qtn_list' qtn01.slug %}">Try Again</a>
+    </button>
+</div>
+
+{% endblock Content %}
+<!-- ------- scripts --------- -->
+{% block scripts %}
+{{ block.super }}
+
+<script>
+    $(document).ready(function(){
+        $('.hint').click(function (e) {
+            // the actual element. can be used as identifier
+            // e is jquery event
+            // how to toggle text from Hint to Hide Hint
+            // read about toggle
+            e.preventDefault()
+            $(this).siblings().toggleClass('d-none')
+            $(this).children().toggleClass('d-none')
+
+            //
+
+
+            console.log(this)
+        })
+        $('.explanation').click(function (e) {
+            
+            e.preventDefault()
+            $(this).siblings().toggleClass('d-none')
+            $(this).children().toggleClass('d-none')
+
+            //
+
+
+            console.log(this)
+        })
+        
+        // ajax
+        $("#question_form").submit(function(event){
+            event.preventDefault();
+            $.ajax({ // key: value pairs
+                data: $(this).serialize(),
+                type: 'post',
+                url:   $(this).attr('action'),
+                success: function(response){
+                        console.log(response);
+                        //$('#feedback').text(response)
+                        // each is used to iterate a dict or list
+                        $.each(response, function(key, val){
+                            //$('#feedback').append("<h1>"+key+ "<h1>", val)
+                            $('#try_again').removeClass('d-none')
+                            $('#score').removeClass('d-none')
+                            $('#submit_btn').addClass('d-none')
+                            // values are used to id color
+                            if (val == 'correct'){
+                                console.log('-----Answer is true-------------')
+                                $('#' + key).addClass('correct')
+                            }
+                            else {
+                            if (val == 'wrong') {
+                                console.log('-----Answer is wrong-------------')
+                                $('#' + key).addClass('wrong')
+                            }
+                            }
+                            if (key == 'score') {
+                                $('#' + key).text(val)
+                            }
+                            if (key.indexOf('expl') == 0 ) {
+                                $('#' + key +'_x').removeClass('d-none')
+                                $('#' + key).text(val)
+                            }
+                            if (key == 'answer') {
+                                console.log('-----Answer -------------')
+                                $('#' + key).text(val)
+                                $('#' + key).removeClass('d-none')
+                            }
+                        })
+
+                          
+                        },
+                error: function(request, status, error){
+                    console.log('error Utter failure')
+                }
+        })
+        
+             
+        })
+
+    })
+    
+    
+</script>
+{% endblock %}
+
+
+
+
+
+   
+
+
+
+

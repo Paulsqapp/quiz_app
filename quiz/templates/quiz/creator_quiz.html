@@ -1,0 +1,56 @@
+{% extends "index.html" %}
+{% load static  %}
+{% block title %}
+{{ block.super }} - Quiz
+{% endblock title %}
+
+{% block Content %}
+
+<div class="row g-5">
+  
+  <div class="">
+
+{% for item in qna_name  %}
+{% if forloop.counter == 1 %}
+
+    
+
+    <div class="card mb-2">
+      <div class="row">
+        
+        <div class="col-sm-4 col-lg-3 img-square-wrapper justify-content-center">
+          <img class="card-img" src="{{item.creator.profile_pic.url}}" alt="">
+          
+        </div>
+        <div class="col-sm-8 col-lg-9 card-body">
+          <h4 class="col p-0 m-0 card-title justify-content-left"> About {{ item.creator.display_name|title }}</h4>
+          <p class="card-text">{{ item.creator.bio|truncatewords:30 }}.</p>
+          <p class="card-text">{{ item.short_desc|truncatewords:30 }}</p>
+          <p class="card-text"><small class="text-muted">Contact me at {{ item.creator.contact|truncatewords:30 }}</small></p>
+          </div>
+      </div>
+        
+    </div>
+    <h4> List of quizes by <b>{{creator_name|title}}</b> </h4>
+    <hr>
+{% endif %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <h4 class="card-title"> <a class="link-dark" href="{{item.get_absolute_url}}">{{ item.name }}</a></h4>
+        <p class="card-text">Created on: {{ item.created|date:'M Y' }} by {{ item.creator.display_name }}.</p>
+        <p class="card-text">{{ item.short_desc|truncatewords:30 }}</p>
+        <p class="card-text"><small class="text-muted">Pass mark: {{ item.pass_mark }}</small>
+        <small class="text-muted">Level: {{ item.diff_level }}</small></p>
+      </div>
+    </div>
+
+{% empty %}
+<h4 class="mb-0">Unfortunately {{ creator_name|title }} has not published any quizes</h4>
+<a href="{% url 'qna:home' %}">To home page</a>
+{% endfor %}
+
+  </div>
+  
+</div>
+
+{% endblock Content %}

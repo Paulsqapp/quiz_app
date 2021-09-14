@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <title>{% block head_title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootswatch-5/dist/flatly/bootstrap.min.css'  %}">
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+  <body>
+    {% include "quiz/navbar.html" %}
+    <div class="container w-75 justify-content-center">
+
+        {% block body %}
+
+        {% if messages %}
+        <div>
+          <strong>Messages:</strong>
+          <ul>
+            {% for message in messages %}
+            <li>{{message}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="d-none">
+          <strong>Menu:</strong>
+          <ul >
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+            <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+            {% else %}
+            <li><a href="{% url 'account_login' %}">Sign In</a></li>
+            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        {% block content %}
+        {% endblock %}
+        {% endblock %}
+        {% block extra_body %}
+        {% endblock %}
+        
+    </div>
+    {% include "quiz/footer.html" %}
+    <script src="{% static 'js/jquery-3.5.1.js'  %}"></script>
+    <script src="{% static 'css/bootswatch-4/js/bootstrap.min.js'  %}"></script>
+
+  </body>
+</html>
