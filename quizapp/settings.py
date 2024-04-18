@@ -105,8 +105,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': "quizapp", 
-        "USER": "quizapp", 
-        "PASSWORD": "somesha", 
+        "USER": "#", 
+        "PASSWORD": '#', 
         "HOST": "localhost",
         "PORT": ""
     }
@@ -222,8 +222,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'paulsqapp@gmail.com'
-EMAIL_HOST_PASSWORD = 'Norkun@2030'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
