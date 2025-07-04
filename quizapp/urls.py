@@ -34,7 +34,6 @@ urlpatterns = [
     path('jobs/', include('hrquiz.urls', namespace='hrquiz')),
     path('accounts/', include('allauth.urls', )),
     
-    path('__debug__/', include(debug_toolbar.urls)),
     path('sitemap.xml', sitemap, {
         'sitemaps': {
             'quizzes': GenericSitemap(info_dict, priority=0.6)
@@ -43,4 +42,8 @@ urlpatterns = [
 ]  
  
 if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+        path("ckeditor5/", include('django_ckeditor_5.urls'))
+        ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
