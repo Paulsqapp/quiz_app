@@ -370,9 +370,9 @@ def take_quiz(request, slug):
                                        'ch_c', 'ch_d', 'ch_e', 'ch_f','qtn_type').filter(quiz_name__slug=slug,).select_related('quiz_name')
     
     #session
-    quiz_session = request.session.get('qui_ssion','kuma')
-    request.session['kuma'] = 'Mellisa Monroe'
-    print(quiz_session, request.session['kuma'])
+    quiz_session = request.session.get('qui_ssion','ama')
+    request.session['ama'] = 'ty'
+    print(quiz_session, request.session['ama'])
     mn = ['question','hint', 'ch_a','ch_b','ch_c', 'ch_d', 'ch_e', 'ch_f']
     print(mn.pop())
     b = Answer_basket(request)
